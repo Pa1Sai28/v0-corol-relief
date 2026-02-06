@@ -50,13 +50,26 @@ const mockUsers: User[] = [
   { username: 'Casey', animal: 'owl', id: '3' },
 ]
 
+const TOPIC_INFO: Record<string, { name: string; icon: string }> = {
+  work: { name: 'Work District', icon: '💼' },
+  health: { name: 'Health Center', icon: '🏥' },
+  coffee: { name: 'Coffee Shop', icon: '☕' },
+  fitness: { name: 'Gym', icon: '💪' },
+  tourist: { name: 'Tourist Center', icon: '🗺️' },
+  gaming: { name: 'Game Zone', icon: '🎮' },
+  education: { name: 'Library', icon: '📚' },
+  food: { name: 'Restaurant', icon: '🍔' },
+}
+
 export default function ChatSession({
   username,
   animal,
+  topic,
   onBack,
 }: {
   username: string
   animal: string
+  topic: string
   onBack: () => void
 }) {
   const [messages, setMessages] = useState<Message[]>([])
@@ -142,7 +155,15 @@ export default function ChatSession({
       {/* Header */}
       <div className="bg-white shadow-sm border-b sticky top-0 z-10">
         <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
-          <h1 className="text-2xl font-bold text-gray-800">Group Chat</h1>
+          <div className="flex items-center gap-3">
+            <span className="text-3xl">{TOPIC_INFO[topic]?.icon || '💬'}</span>
+            <div>
+              <h1 className="text-2xl font-bold text-gray-800">
+                {TOPIC_INFO[topic]?.name || 'Group Chat'}
+              </h1>
+              <p className="text-sm text-gray-600">Community Chat Room</p>
+            </div>
+          </div>
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2">
               <span className="text-2xl">
@@ -155,7 +176,7 @@ export default function ChatSession({
               variant="outline"
               className="text-sm bg-transparent"
             >
-              Leave
+              Back to Map
             </Button>
           </div>
         </div>

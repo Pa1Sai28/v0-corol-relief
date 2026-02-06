@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card } from '@/components/ui/card'
 import ChatSession from '@/components/chat-session'
+import HomeMap from '@/components/home-map'
 
 const ANIMALS = [
   { id: 'rabbit', name: 'Rabbit', emoji: '🐰' },
@@ -16,18 +17,42 @@ const ANIMALS = [
 ]
 
 export default function Page() {
-  const [step, setStep] = useState<'signup' | 'chat'>('signup')
+  const [step, setStep] = useState<'signup' | 'home' | 'chat'>('signup')
   const [selectedAnimal, setSelectedAnimal] = useState<string | null>(null)
   const [username, setUsername] = useState('')
+  const [selectedTopic, setSelectedTopic] = useState<string>('')
 
   const handleSignup = () => {
     if (username && selectedAnimal) {
-      setStep('chat')
+      setStep('home')
     }
   }
 
+  const handleTopicSelect = (topic: string) => {
+    setSelectedTopic(topic)
+    setStep('chat')
+  }
+
+  if (step === 'home') {
+    return (
+      <HomeMap
+        username={username}
+        animal={selectedAnimal!}
+        onTopicSelect={handleTopicSelect}
+        onBack={() => setStep('signup')}
+      />
+    )
+  }
+
   if (step === 'chat') {
-    return <ChatSession username={username} animal={selectedAnimal!} onBack={() => setStep('signup')} />
+    return (
+      <ChatSession
+        username={username}
+        animal={selectedAnimal!}
+        topic={selectedTopic}
+        onBack={() => setStep('home')}
+      />
+    )
   }
 
   return (
