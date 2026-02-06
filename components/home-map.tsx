@@ -1,9 +1,7 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { Button } from '@/components/ui/button'
-
-type Season = 'spring' | 'summer' | 'fall' | 'winter'
 
 const ANIMALS = [
   { id: 'rabbit', name: 'Rabbit', emoji: '🐰' },
@@ -13,33 +11,6 @@ const ANIMALS = [
   { id: 'owl', name: 'Owl', emoji: '🦉' },
   { id: 'deer', name: 'Deer', emoji: '🦌' },
 ]
-
-const SEASON_THEMES = {
-  spring: {
-    bg: 'from-sky-300 via-emerald-200 to-green-300',
-    trees: ['🌸', '🌷', '🌺'],
-    clouds: '☁️',
-    ground: 'from-green-400 to-green-500',
-  },
-  summer: {
-    bg: 'from-blue-400 via-yellow-200 to-amber-300',
-    trees: ['🌳', '🌴', '☀️'],
-    clouds: '☁️',
-    ground: 'from-yellow-500 to-amber-600',
-  },
-  fall: {
-    bg: 'from-orange-300 via-amber-200 to-yellow-300',
-    trees: ['🍂', '🍁', '🌾'],
-    clouds: '☁️',
-    ground: 'from-orange-600 to-red-600',
-  },
-  winter: {
-    bg: 'from-slate-300 via-blue-200 to-cyan-300',
-    trees: ['❄️', '⛄', '🌨️'],
-    clouds: '☁️',
-    ground: 'from-blue-300 to-blue-400',
-  },
-}
 
 interface Location {
   id: string
@@ -58,7 +29,7 @@ const LOCATIONS: Location[] = [
     icon: '☕',
     color: 'from-amber-600 to-amber-800',
     description: 'Casual Chats & Relaxation',
-    position: { top: '52%', left: '21%' }, // Coffee shop building on left side
+    position: { top: '52%', left: '21%' },
   },
   {
     id: 'gaming',
@@ -66,7 +37,7 @@ const LOCATIONS: Location[] = [
     icon: '🎮',
     color: 'from-fuchsia-600 to-fuchsia-800',
     description: 'Gaming & Entertainment',
-    position: { top: '70%', left: '15%' }, // Dock area with boat
+    position: { top: '70%', left: '15%' },
   },
   {
     id: 'tourist',
@@ -74,7 +45,7 @@ const LOCATIONS: Location[] = [
     icon: '🗺️',
     color: 'from-violet-600 to-violet-800',
     description: 'Travel & Exploration',
-    position: { top: '60%', left: '8%' }, // Lighthouse on left
+    position: { top: '60%', left: '8%' },
   },
   {
     id: 'food',
@@ -82,7 +53,7 @@ const LOCATIONS: Location[] = [
     icon: '🍕',
     color: 'from-rose-600 to-rose-800',
     description: 'Food & Cooking',
-    position: { top: '28%', left: '48%' }, // Central plaza area
+    position: { top: '28%', left: '48%' },
   },
   {
     id: 'education',
@@ -90,7 +61,7 @@ const LOCATIONS: Location[] = [
     icon: '📚',
     color: 'from-indigo-600 to-indigo-800',
     description: 'Learning & Knowledge',
-    position: { top: '20%', left: '60%' }, // Forest area top right
+    position: { top: '20%', left: '60%' },
   },
   {
     id: 'fitness',
@@ -98,7 +69,7 @@ const LOCATIONS: Location[] = [
     icon: '💪',
     color: 'from-orange-600 to-orange-800',
     description: 'Fitness & Sports',
-    position: { top: '55%', left: '52%' }, // Center castle structure
+    position: { top: '55%', left: '52%' },
   },
   {
     id: 'work',
@@ -106,7 +77,7 @@ const LOCATIONS: Location[] = [
     icon: '🏢',
     color: 'from-slate-500 to-slate-700',
     description: 'Business & Career',
-    position: { top: '20%', left: '22%' }, // Building in upper left area
+    position: { top: '20%', left: '22%' },
   },
   {
     id: 'health',
@@ -114,134 +85,40 @@ const LOCATIONS: Location[] = [
     icon: '🏥',
     color: 'from-emerald-500 to-emerald-700',
     description: 'Health & Wellness',
-    position: { top: '40%', left: '75%' }, // Right side forest area
+    position: { top: '40%', left: '75%' },
   },
 ]
-
-const SEASONS: Season[] = ['spring', 'summer', 'fall', 'winter']
 
 export default function HomeMap({
   username,
   animal,
   onTopicSelect,
   onBack,
-  triggerSeasonChange = false,
 }: {
   username: string
   animal: string
   onTopicSelect: (topic: string) => void
   onBack: () => void
-  triggerSeasonChange?: boolean
 }) {
   const [hoveredLocation, setHoveredLocation] = useState<string | null>(null)
-  const [season, setSeason] = useState<Season>('winter')
-  const [cloudPosition, setCloudPosition] = useState(0)
-  const [isTransitioning, setIsTransitioning] = useState(false)
   const currentAnimal = ANIMALS.find((a) => a.id === animal)
-  const theme = SEASON_THEMES[season]
-
-  // Animate clouds
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCloudPosition((prev) => (prev + 0.5) % 100)
-    }, 50)
-    return () => clearInterval(interval)
-  }, [])
-
-  // Helper function to change season with transition
-  const changeSeason = (reason: string) => {
-    setIsTransitioning(true)
-    setSeason((prevSeason) => {
-      const currentIndex = SEASONS.indexOf(prevSeason)
-      const nextIndex = (currentIndex + 1) % SEASONS.length
-      console.log(`[v0] ${reason}: ${prevSeason} → ${SEASONS[nextIndex]}`)
-      return SEASONS[nextIndex]
-    })
-    setTimeout(() => setIsTransitioning(false), 1000)
-  }
-
-  // Auto-cycle seasons every 15 seconds
-  useEffect(() => {
-    const interval = setInterval(() => {
-      changeSeason('Auto-changing season')
-    }, 15000) // Change every 15 seconds
-
-    return () => clearInterval(interval)
-  }, [])
-
-  // Change season when returning from chat
-  useEffect(() => {
-    if (triggerSeasonChange) {
-      changeSeason('Season change after chat visit')
-    }
-  }, [triggerSeasonChange])
 
   return (
-    <div className="min-h-screen bg-blue-500 relative overflow-hidden">
-      {/* Season Transition Overlay */}
-      {isTransitioning && (
-        <div className="absolute inset-0 bg-white z-50 animate-pulse pointer-events-none opacity-40" />
-      )}
-
-      {/* Season Change Notification */}
-      {isTransitioning && (
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 pointer-events-none">
-          <div className="bg-gray-900/90 text-white px-8 py-4 rounded-2xl shadow-2xl border-2 border-white/30 animate-fade-in">
-            <p className="text-2xl font-bold capitalize text-center">
-              {season} is here!
-            </p>
-          </div>
-        </div>
-      )}
-
-      {/* Animated Background Clouds (optional overlay) */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
-        <div
-          className="absolute top-[5%] text-6xl opacity-20 transition-transform duration-300"
-          style={{ left: `${cloudPosition}%` }}
-        >
-          {theme.clouds}
-        </div>
-        <div
-          className="absolute top-[8%] text-5xl opacity-15 transition-transform duration-300"
-          style={{ left: `${(cloudPosition + 40) % 100}%` }}
-        >
-          {theme.clouds}
-        </div>
-      </div>
-
-      {/* Header with Season Selector */}
+    <div className="min-h-screen bg-gradient-to-b from-blue-400 to-blue-600 relative overflow-hidden">
+      {/* Header */}
       <div className="absolute top-0 left-0 right-0 z-20 bg-gray-900/80 backdrop-blur-sm shadow-lg border-b border-white/20">
         <div className="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="text-3xl animate-bounce">{currentAnimal?.emoji}</div>
+            <div className="text-3xl">{currentAnimal?.emoji}</div>
             <div>
               <h2 className="font-bold text-white">{username}</h2>
               <p className="text-xs text-gray-300">{currentAnimal?.name}</p>
             </div>
           </div>
           
-          {/* Season Switcher */}
-          <div className="flex items-center gap-2">
-            <div className="flex gap-1 bg-gray-800/60 rounded-lg p-1">
-              {(['spring', 'summer', 'fall', 'winter'] as Season[]).map((s) => (
-                <button
-                  key={s}
-                  onClick={() => setSeason(s)}
-                  className={`px-3 py-1 rounded text-sm font-medium transition-all ${
-                    season === s
-                      ? 'bg-white text-gray-900'
-                      : 'text-gray-300 hover:text-white hover:bg-gray-700'
-                  }`}
-                >
-                  {s.charAt(0).toUpperCase() + s.slice(1)}
-                </button>
-              ))}
-            </div>
-            <Button onClick={onBack} variant="outline" size="sm" className="bg-gray-800 text-white border-gray-700">
-              Sign Out
-            </Button>
-          </div>
+          <Button onClick={onBack} variant="outline" size="sm" className="bg-gray-800 text-white border-gray-700">
+            Sign Out
+          </Button>
         </div>
       </div>
 
@@ -253,7 +130,7 @@ export default function HomeMap({
             Animal Town Map
           </h1>
           <p className="text-lg text-white drop-shadow-lg font-semibold" style={{ textShadow: '0 2px 4px rgba(0,0,0,0.8)' }}>
-            Click any location to join the conversation
+            Hover over locations to explore chat rooms
           </p>
         </div>
 
@@ -267,71 +144,89 @@ export default function HomeMap({
               className="absolute inset-0 w-full h-full object-contain drop-shadow-2xl"
             />
 
-            {/* Interactive Location Hotspots */}
+            {/* Interactive Hover Regions */}
             {LOCATIONS.map((location) => (
-              <button
+              <div
                 key={location.id}
-                onClick={() => onTopicSelect(location.id)}
                 onMouseEnter={() => setHoveredLocation(location.id)}
                 onMouseLeave={() => setHoveredLocation(null)}
-                className="absolute transform -translate-x-1/2 -translate-y-1/2 transition-all duration-200 group z-20"
+                onClick={() => onTopicSelect(location.id)}
+                className="absolute transform -translate-x-1/2 -translate-y-1/2 z-20 cursor-pointer group"
                 style={{
                   top: location.position.top,
                   left: location.position.left,
                 }}
               >
-                {/* Clickable Hotspot Marker */}
-                <div className="relative">
-                  {/* Pulsing Ring Effect */}
-                  <div className={`absolute inset-0 rounded-full bg-gradient-to-br ${location.color} opacity-40 animate-ping ${hoveredLocation === location.id ? 'opacity-60' : ''}`} />
-                  
-                  {/* Main Marker Circle */}
+                {/* Invisible Large Hover Area */}
+                <div className="w-32 h-32 flex items-center justify-center">
+                  {/* Pulsing Indicator (always visible but subtle) */}
                   <div
-                    className={`relative flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br ${location.color} shadow-2xl transform transition-all duration-200 border-4 border-white ${
+                    className={`absolute w-6 h-6 rounded-full transition-all duration-300 ${
                       hoveredLocation === location.id
-                        ? 'scale-125 shadow-[0_0_30px_rgba(255,255,255,0.8)]'
-                        : 'hover:scale-110'
+                        ? 'w-12 h-12 opacity-0'
+                        : 'opacity-60 animate-ping'
                     }`}
-                  >
-                    {/* Icon */}
-                    <div className="text-3xl transform group-hover:scale-110 transition-transform">
-                      {location.icon}
-                    </div>
-                  </div>
+                    style={{
+                      background: `linear-gradient(to bottom right, var(--tw-gradient-stops))`,
+                    }}
+                  />
 
-                  {/* Location Name Label */}
-                  <div className="absolute -bottom-10 left-1/2 transform -translate-x-1/2 whitespace-nowrap pointer-events-none">
-                    <div className={`bg-gray-900/90 backdrop-blur-sm px-4 py-2 rounded-lg shadow-xl border-2 border-white/30 transition-all ${hoveredLocation === location.id ? 'scale-110' : ''}`}>
-                      <span className="text-xs font-bold text-white">{location.name}</span>
-                    </div>
-                  </div>
-
-                  {/* Hover Tooltip */}
-                  {hoveredLocation === location.id && (
-                    <div className="absolute -top-16 left-1/2 transform -translate-x-1/2 bg-white text-gray-900 px-4 py-2 rounded-lg text-sm whitespace-nowrap shadow-2xl z-50 animate-fade-in border-2 border-gray-200">
-                      {location.description}
-                      <div className="absolute -bottom-1.5 left-1/2 transform -translate-x-1/2 w-3 h-3 bg-white border-r-2 border-b-2 border-gray-200 rotate-45" />
-                    </div>
-                  )}
-
-                  {/* Online Indicator */}
-                  <div className="absolute -top-1 -right-1 w-5 h-5 bg-green-500 rounded-full animate-pulse border-3 border-white shadow-lg flex items-center justify-center">
-                    <span className="text-xs text-white font-bold">{Math.floor(Math.random() * 9) + 1}</span>
-                  </div>
+                  {/* Small Dot Marker (always visible) */}
+                  <div
+                    className={`w-4 h-4 rounded-full border-2 border-white shadow-lg transition-all duration-300 ${
+                      hoveredLocation === location.id ? 'scale-150' : 'scale-100'
+                    } bg-gradient-to-br ${location.color}`}
+                  />
                 </div>
-              </button>
+
+                {/* Hover Card - Appears on hover */}
+                {hoveredLocation === location.id && (
+                  <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 animate-fade-in pointer-events-none">
+                    {/* Spotlight Effect */}
+                    <div className="absolute inset-0 -m-32 rounded-full bg-gradient-radial from-white/30 via-white/10 to-transparent animate-pulse" />
+                    
+                    {/* Location Card */}
+                    <div className={`relative bg-gradient-to-br ${location.color} rounded-2xl shadow-2xl border-4 border-white p-6 min-w-[220px] pointer-events-auto`}>
+                      {/* Icon */}
+                      <div className="text-6xl text-center mb-3 animate-bounce">
+                        {location.icon}
+                      </div>
+                      
+                      {/* Name */}
+                      <h3 className="text-xl font-bold text-white text-center mb-2">
+                        {location.name}
+                      </h3>
+                      
+                      {/* Description */}
+                      <p className="text-sm text-white/90 text-center mb-4">
+                        {location.description}
+                      </p>
+                      
+                      {/* Online Count */}
+                      <div className="flex items-center justify-center gap-2 bg-white/20 rounded-full px-4 py-2 mb-3">
+                        <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
+                        <span className="text-sm font-semibold text-white">
+                          {Math.floor(Math.random() * 20) + 5} online
+                        </span>
+                      </div>
+                      
+                      {/* Click Button */}
+                      <button 
+                        onClick={() => onTopicSelect(location.id)}
+                        className="w-full bg-white/30 hover:bg-white/40 text-white font-bold py-2 rounded-lg transition-all"
+                      >
+                        Join Chat
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
             ))}
           </div>
         </div>
 
-        {/* Map Controls & Info */}
-        <div className="absolute bottom-6 left-6 right-6 flex items-end justify-between pointer-events-none">
-          {/* Season Info */}
-          <div className="bg-gray-900/80 backdrop-blur-sm rounded-2xl px-5 py-3 shadow-lg border border-white/20 pointer-events-auto">
-            <p className="text-xs text-gray-400 mb-1">Current Season</p>
-            <p className="text-lg font-bold text-white capitalize">{season}</p>
-          </div>
-
+        {/* Bottom Info Bar */}
+        <div className="absolute bottom-6 right-6 pointer-events-none">
           {/* Online Counter */}
           <div className="bg-gray-900/80 backdrop-blur-sm rounded-2xl px-5 py-3 shadow-lg flex items-center gap-3 border border-white/20 pointer-events-auto">
             <div className="flex items-center gap-2">
