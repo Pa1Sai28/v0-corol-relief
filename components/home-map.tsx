@@ -50,70 +50,71 @@ interface Location {
   position: { top: string; left: string }
 }
 
+// Map locations based on the Club Penguin-style map image
 const LOCATIONS: Location[] = [
   {
-    id: 'work',
-    name: 'Business Plaza',
-    icon: '🏢',
-    color: 'from-slate-500 to-slate-700',
-    description: 'Business & Career Discussions',
-    position: { top: '25%', left: '15%' },
-  },
-  {
-    id: 'health',
-    name: 'Wellness District',
-    icon: '🏥',
-    color: 'from-emerald-500 to-emerald-700',
-    description: 'Health & Mental Wellness',
-    position: { top: '20%', left: '72%' },
-  },
-  {
     id: 'coffee',
-    name: 'Cozy Café',
+    name: 'Coffee Shop',
     icon: '☕',
     color: 'from-amber-600 to-amber-800',
     description: 'Casual Chats & Relaxation',
-    position: { top: '65%', left: '25%' },
-  },
-  {
-    id: 'fitness',
-    name: 'Sports Arena',
-    icon: '💪',
-    color: 'from-orange-600 to-orange-800',
-    description: 'Fitness & Sports Talk',
-    position: { top: '45%', left: '80%' },
-  },
-  {
-    id: 'tourist',
-    name: 'Adventure Park',
-    icon: '🗺️',
-    color: 'from-violet-600 to-violet-800',
-    description: 'Travel & Exploration',
-    position: { top: '75%', left: '65%' },
+    position: { top: '52%', left: '21%' }, // Coffee shop building on left side
   },
   {
     id: 'gaming',
-    name: 'Arcade Center',
+    name: 'Game Room',
     icon: '🎮',
     color: 'from-fuchsia-600 to-fuchsia-800',
     description: 'Gaming & Entertainment',
-    position: { top: '52%', left: '10%' },
+    position: { top: '70%', left: '15%' }, // Dock area with boat
   },
   {
-    id: 'education',
-    name: 'Grand Library',
-    icon: '📚',
-    color: 'from-indigo-600 to-indigo-800',
-    description: 'Learning & Knowledge',
-    position: { top: '40%', left: '45%' },
+    id: 'tourist',
+    name: 'Lighthouse',
+    icon: '🗺️',
+    color: 'from-violet-600 to-violet-800',
+    description: 'Travel & Exploration',
+    position: { top: '60%', left: '8%' }, // Lighthouse on left
   },
   {
     id: 'food',
-    name: 'Food Court',
+    name: 'Pizza Parlor',
     icon: '🍕',
     color: 'from-rose-600 to-rose-800',
-    description: 'Cooking & Recipes',
-    position: { top: '10%', left: '45%' },
+    description: 'Food & Cooking',
+    position: { top: '28%', left: '48%' }, // Central plaza area
+  },
+  {
+    id: 'education',
+    name: 'Library',
+    icon: '📚',
+    color: 'from-indigo-600 to-indigo-800',
+    description: 'Learning & Knowledge',
+    position: { top: '20%', left: '60%' }, // Forest area top right
+  },
+  {
+    id: 'fitness',
+    name: 'Dojo',
+    icon: '💪',
+    color: 'from-orange-600 to-orange-800',
+    description: 'Fitness & Sports',
+    position: { top: '55%', left: '52%' }, // Center castle structure
+  },
+  {
+    id: 'work',
+    name: 'Ski Lodge',
+    icon: '🏢',
+    color: 'from-slate-500 to-slate-700',
+    description: 'Business & Career',
+    position: { top: '20%', left: '22%' }, // Building in upper left area
+  },
+  {
+    id: 'health',
+    name: 'Wellness Center',
+    icon: '🏥',
+    color: 'from-emerald-500 to-emerald-700',
+    description: 'Health & Wellness',
+    position: { top: '40%', left: '75%' }, // Right side forest area
   },
 ]
 
@@ -143,24 +144,18 @@ export default function HomeMap({
   }, [])
 
   return (
-    <div className={`min-h-screen bg-gradient-to-b ${theme.bg} relative overflow-hidden transition-all duration-1000`}>
-      {/* Animated Background Clouds */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+    <div className="min-h-screen bg-blue-500 relative overflow-hidden">
+      {/* Animated Background Clouds (optional overlay) */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
         <div
-          className="absolute top-[10%] text-6xl opacity-30 transition-transform duration-300"
+          className="absolute top-[5%] text-6xl opacity-20 transition-transform duration-300"
           style={{ left: `${cloudPosition}%` }}
         >
           {theme.clouds}
         </div>
         <div
-          className="absolute top-[20%] text-5xl opacity-40 transition-transform duration-300"
-          style={{ left: `${(cloudPosition + 30) % 100}%` }}
-        >
-          {theme.clouds}
-        </div>
-        <div
-          className="absolute top-[15%] text-7xl opacity-25 transition-transform duration-300"
-          style={{ left: `${(cloudPosition + 60) % 100}%` }}
+          className="absolute top-[8%] text-5xl opacity-15 transition-transform duration-300"
+          style={{ left: `${(cloudPosition + 40) % 100}%` }}
         >
           {theme.clouds}
         </div>
@@ -204,99 +199,76 @@ export default function HomeMap({
       {/* Main Map Container */}
       <div className="relative h-screen pt-16 flex items-center justify-center">
         {/* Map Title */}
-        <div className="absolute top-20 left-0 right-0 text-center z-10 pointer-events-none">
-          <h1 className="text-5xl font-black text-white drop-shadow-lg mb-1 text-balance">
+        <div className="absolute top-20 left-0 right-0 text-center z-30 pointer-events-none">
+          <h1 className="text-5xl font-black text-white drop-shadow-2xl mb-1 text-balance" style={{ textShadow: '0 4px 8px rgba(0,0,0,0.8)' }}>
             Animal Town Map
           </h1>
-          <p className="text-lg text-white/90 drop-shadow font-semibold">
-            Click any region to join the conversation
+          <p className="text-lg text-white drop-shadow-lg font-semibold" style={{ textShadow: '0 2px 4px rgba(0,0,0,0.8)' }}>
+            Click any location to join the conversation
           </p>
         </div>
 
-        {/* Map SVG-style Ground */}
-        <div className="absolute inset-0 flex items-center justify-center pt-32">
-          <div className={`relative w-[90vw] h-[70vh] max-w-5xl max-h-[600px] rounded-3xl bg-gradient-to-br ${theme.ground} shadow-2xl border-4 border-white/30 overflow-hidden`}>
-            {/* Decorative Elements on Map */}
-            <div className="absolute inset-0 pointer-events-none">
-              {/* Roads/Paths */}
-              <div className="absolute top-1/2 left-0 right-0 h-2 bg-gray-800/30 transform -translate-y-1/2" />
-              <div className="absolute top-0 bottom-0 left-1/2 w-2 bg-gray-800/30 transform -translate-x-1/2" />
-              
-              {/* Seasonal decorations */}
-              {theme.trees.map((tree, i) => (
-                <div
-                  key={i}
-                  className="absolute text-4xl opacity-50 animate-pulse"
-                  style={{
-                    top: `${15 + i * 25}%`,
-                    left: `${5 + i * 20}%`,
-                    animationDelay: `${i * 0.5}s`,
-                  }}
-                >
-                  {tree}
-                </div>
-              ))}
-            </div>
+        {/* Map Image Container */}
+        <div className="absolute inset-0 flex items-center justify-center pt-32 pb-24">
+          <div className="relative w-[95vw] h-[75vh] max-w-6xl max-h-[700px]">
+            {/* Background Map Image */}
+            <img
+              src="/map-background.png"
+              alt="Animal Town Map"
+              className="absolute inset-0 w-full h-full object-contain drop-shadow-2xl"
+            />
 
-            {/* Interactive Location Regions */}
+            {/* Interactive Location Hotspots */}
             {LOCATIONS.map((location) => (
               <button
                 key={location.id}
                 onClick={() => onTopicSelect(location.id)}
                 onMouseEnter={() => setHoveredLocation(location.id)}
                 onMouseLeave={() => setHoveredLocation(null)}
-                className="absolute transform -translate-x-1/2 -translate-y-1/2 transition-all duration-300 group z-10"
+                className="absolute transform -translate-x-1/2 -translate-y-1/2 transition-all duration-200 group z-20"
                 style={{
                   top: location.position.top,
                   left: location.position.left,
                 }}
               >
-                {/* Building Structure */}
+                {/* Clickable Hotspot Marker */}
                 <div className="relative">
-                  {/* Building Base */}
+                  {/* Pulsing Ring Effect */}
+                  <div className={`absolute inset-0 rounded-full bg-gradient-to-br ${location.color} opacity-40 animate-ping ${hoveredLocation === location.id ? 'opacity-60' : ''}`} />
+                  
+                  {/* Main Marker Circle */}
                   <div
-                    className={`relative flex flex-col items-center justify-end w-28 h-36 rounded-t-xl bg-gradient-to-b ${location.color} shadow-xl transform transition-all duration-300 border-2 border-white/40 ${
+                    className={`relative flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br ${location.color} shadow-2xl transform transition-all duration-200 border-4 border-white ${
                       hoveredLocation === location.id
-                        ? 'scale-110 shadow-2xl -translate-y-2'
-                        : 'hover:scale-105'
+                        ? 'scale-125 shadow-[0_0_30px_rgba(255,255,255,0.8)]'
+                        : 'hover:scale-110'
                     }`}
                   >
-                    {/* Windows */}
-                    <div className="absolute top-3 left-0 right-0 flex justify-center gap-2">
-                      <div className="w-3 h-3 bg-yellow-200/80 rounded-sm" />
-                      <div className="w-3 h-3 bg-yellow-200/80 rounded-sm" />
-                    </div>
-                    <div className="absolute top-8 left-0 right-0 flex justify-center gap-2">
-                      <div className="w-3 h-3 bg-yellow-200/80 rounded-sm" />
-                      <div className="w-3 h-3 bg-yellow-200/80 rounded-sm" />
-                    </div>
-                    
                     {/* Icon */}
-                    <div className="text-5xl mb-3 transform group-hover:scale-125 transition-transform drop-shadow-lg">
+                    <div className="text-3xl transform group-hover:scale-110 transition-transform">
                       {location.icon}
                     </div>
                   </div>
 
-                  {/* Door */}
-                  <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-8 h-10 bg-gray-800 rounded-t-md border-2 border-white/40" />
-                  
-                  {/* Name Label */}
-                  <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 whitespace-nowrap">
-                    <div className="bg-white/95 px-3 py-1 rounded-full shadow-lg border border-gray-300">
-                      <span className="text-xs font-bold text-gray-800">{location.name}</span>
+                  {/* Location Name Label */}
+                  <div className="absolute -bottom-10 left-1/2 transform -translate-x-1/2 whitespace-nowrap pointer-events-none">
+                    <div className={`bg-gray-900/90 backdrop-blur-sm px-4 py-2 rounded-lg shadow-xl border-2 border-white/30 transition-all ${hoveredLocation === location.id ? 'scale-110' : ''}`}>
+                      <span className="text-xs font-bold text-white">{location.name}</span>
                     </div>
                   </div>
 
                   {/* Hover Tooltip */}
                   {hoveredLocation === location.id && (
-                    <div className="absolute -top-16 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white px-4 py-2 rounded-lg text-sm whitespace-nowrap shadow-2xl z-50 animate-fade-in">
+                    <div className="absolute -top-16 left-1/2 transform -translate-x-1/2 bg-white text-gray-900 px-4 py-2 rounded-lg text-sm whitespace-nowrap shadow-2xl z-50 animate-fade-in border-2 border-gray-200">
                       {location.description}
-                      <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-gray-900 rotate-45" />
+                      <div className="absolute -bottom-1.5 left-1/2 transform -translate-x-1/2 w-3 h-3 bg-white border-r-2 border-b-2 border-gray-200 rotate-45" />
                     </div>
                   )}
 
-                  {/* Active Indicator */}
-                  <div className="absolute -top-2 -right-2 w-4 h-4 bg-green-500 rounded-full animate-pulse border-2 border-white shadow-lg" />
+                  {/* Online Indicator */}
+                  <div className="absolute -top-1 -right-1 w-5 h-5 bg-green-500 rounded-full animate-pulse border-3 border-white shadow-lg flex items-center justify-center">
+                    <span className="text-xs text-white font-bold">{Math.floor(Math.random() * 9) + 1}</span>
+                  </div>
                 </div>
               </button>
             ))}
