@@ -1,5 +1,25 @@
 'use client'
 
+/**
+ * ============================================================
+ * CHAT SESSION COMPONENT - STUB FOR INTEGRATION
+ * ============================================================
+ * 
+ * This is a PLACEHOLDER component demonstrating the chat interface.
+ * YOUR FRIEND SHOULD REPLACE THIS ENTIRE FILE with their chat implementation.
+ * 
+ * REQUIRED PROPS:
+ * - username: string     → Current user's name
+ * - animal: string       → Current user's animal avatar ID
+ * - topic: string        → Selected chat room topic (e.g., 'tech-hub', 'design-studio')
+ * - onBack: () => void   → Callback to navigate back to the map
+ * 
+ * AVAILABLE TOPICS:
+ * See lib/integration-helpers.ts for complete topic list
+ * 
+ * ============================================================
+ */
+
 import { useState, useRef, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'

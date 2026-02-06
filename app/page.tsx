@@ -5,10 +5,15 @@ import ChatSession from '@/components/chat-session'
 import HomeMap from '@/components/home-map'
 
 export default function Page() {
-  // Mock user data - will be replaced with signup integration later
+  // ============================================================
+  // INTEGRATION POINT #1: User Authentication
+  // ============================================================
+  // TODO: Replace with your friend's signup/auth system
+  // Example: const { user, isAuthenticated } = useAuth()
+  // Then use: user.username, user.animal, user.profile
   const [step, setStep] = useState<'home' | 'chat'>('home')
-  const [selectedAnimal] = useState<string>('fox') // Default animal for testing
-  const [username] = useState('TestUser') // Default username for testing
+  const [selectedAnimal] = useState<string>('fox') // REPLACE: user.animal
+  const [username] = useState('TestUser') // REPLACE: user.username
   const [selectedTopic, setSelectedTopic] = useState<string>('')
 
   const handleTopicSelect = (topic: string) => {
@@ -17,6 +22,11 @@ export default function Page() {
   }
 
   if (step === 'chat') {
+    // ============================================================
+    // INTEGRATION POINT #2: Chat Component
+    // ============================================================
+    // TODO: Replace ChatSession with your friend's chat implementation
+    // Required props: username, animal, topic, onBack
     return (
       <ChatSession
         username={username}
@@ -27,7 +37,10 @@ export default function Page() {
     )
   }
 
-  // Home page is the default starting point
+  // ============================================================
+  // MY PART: Interactive Map for Topic Selection
+  // ============================================================
+  // This component is complete and handles topic selection
   return (
     <HomeMap
       username={username}
