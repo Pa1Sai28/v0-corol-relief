@@ -118,20 +118,25 @@ const LOCATIONS: Location[] = [
   },
 ]
 
+const SEASONS: Season[] = ['spring', 'summer', 'fall', 'winter']
+
 export default function HomeMap({
   username,
   animal,
   onTopicSelect,
   onBack,
+  triggerSeasonChange = false,
 }: {
   username: string
   animal: string
   onTopicSelect: (topic: string) => void
   onBack: () => void
+  triggerSeasonChange?: boolean
 }) {
   const [hoveredLocation, setHoveredLocation] = useState<string | null>(null)
-  const [season, setSeason] = useState<Season>('spring')
+  const [season, setSeason] = useState<Season>('winter')
   const [cloudPosition, setCloudPosition] = useState(0)
+  const [isTransitioning, setIsTransitioning] = useState(false)
   const currentAnimal = ANIMALS.find((a) => a.id === animal)
   const theme = SEASON_THEMES[season]
 
@@ -143,8 +148,52 @@ export default function HomeMap({
     return () => clearInterval(interval)
   }, [])
 
+  // Helper function to change season with transition
+  const changeSeason = (reason: string) => {
+    setIsTransitioning(true)
+    setSeason((prevSeason) => {
+      const currentIndex = SEASONS.indexOf(prevSeason)
+      const nextIndex = (currentIndex + 1) % SEASONS.length
+      console.log(`[v0] ${reason}: ${prevSeason} → ${SEASONS[nextIndex]}`)
+      return SEASONS[nextIndex]
+    })
+    setTimeout(() => setIsTransitioning(false), 1000)
+  }
+
+  // Auto-cycle seasons every 15 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      changeSeason('Auto-changing season')
+    }, 15000) // Change every 15 seconds
+
+    return () => clearInterval(interval)
+  }, [])
+
+  // Change season when returning from chat
+  useEffect(() => {
+    if (triggerSeasonChange) {
+      changeSeason('Season change after chat visit')
+    }
+  }, [triggerSeasonChange])
+
   return (
     <div className="min-h-screen bg-blue-500 relative overflow-hidden">
+      {/* Season Transition Overlay */}
+      {isTransitioning && (
+        <div className="absolute inset-0 bg-white z-50 animate-pulse pointer-events-none opacity-40" />
+      )}
+
+      {/* Season Change Notification */}
+      {isTransitioning && (
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 pointer-events-none">
+          <div className="bg-gray-900/90 text-white px-8 py-4 rounded-2xl shadow-2xl border-2 border-white/30 animate-fade-in">
+            <p className="text-2xl font-bold capitalize text-center">
+              {season} is here!
+            </p>
+          </div>
+        </div>
+      )}
+
       {/* Animated Background Clouds (optional overlay) */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
         <div
