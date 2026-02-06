@@ -5,6 +5,9 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import AnimalAvatar from '@/components/animal-avatar'
 import MessageBubble from '@/components/message-bubble'
+import UserProfileCard from '@/components/user-profile-card'
+import { UserProfile, STATUS_CONFIG } from '@/types/user'
+import { User } from '@/types/user' // Import User type
 
 const ANIMALS = [
   { id: 'rabbit', name: 'Rabbit', emoji: '🐰' },
@@ -22,12 +25,7 @@ interface Message {
   animal: string
   timestamp: number
   reaction?: 'laugh' | 'love' | 'wow' | 'sad'
-}
-
-interface User {
-  username: string
-  animal: string
-  id: string
+  userProfile?: UserProfile
 }
 
 interface ReactionEmoji {
@@ -44,21 +42,49 @@ const REACTIONS: ReactionEmoji = {
   sad: '😢',
 }
 
-const mockUsers: User[] = [
-  { username: 'Alex', animal: 'fox', id: '1' },
-  { username: 'Jordan', animal: 'bear', id: '2' },
-  { username: 'Casey', animal: 'owl', id: '3' },
+// Mock user profiles with professional info
+const mockUserProfiles: UserProfile[] = [
+  {
+    username: 'Sarah Chen',
+    animal: 'fox',
+    status: 'hiring',
+    skills: ['React', 'TypeScript', 'Node.js'],
+    title: 'Engineering Manager',
+    company: 'TechCorp',
+  },
+  {
+    username: 'Mike Rodriguez',
+    animal: 'bear',
+    status: 'looking-for-work',
+    skills: ['UI/UX Design', 'Figma', 'CSS'],
+    title: 'Senior Designer',
+    lookingFor: 'Full-time design role',
+  },
+  {
+    username: 'Emma Wilson',
+    animal: 'owl',
+    status: 'mentoring',
+    skills: ['Python', 'Data Science', 'ML'],
+    title: 'Data Scientist',
+    company: 'DataLabs',
+  },
+]
+
+const mockUsers = [
+  { id: '1', username: 'John Doe', animal: 'rabbit' },
+  { id: '2', username: 'Jane Smith', animal: 'wolf' },
+  { id: '3', username: 'Alice Johnson', animal: 'deer' },
 ]
 
 const TOPIC_INFO: Record<string, { name: string; icon: string }> = {
-  work: { name: 'Work District', icon: '💼' },
-  health: { name: 'Health Center', icon: '🏥' },
-  coffee: { name: 'Coffee Shop', icon: '☕' },
-  fitness: { name: 'Gym', icon: '💪' },
-  tourist: { name: 'Tourist Center', icon: '🗺️' },
-  gaming: { name: 'Game Zone', icon: '🎮' },
-  education: { name: 'Library', icon: '📚' },
-  food: { name: 'Restaurant', icon: '🍔' },
+  'tech-hub': { name: 'Tech Hub', icon: '💻' },
+  'design-studio': { name: 'Design Studio', icon: '🎨' },
+  'business-plaza': { name: 'Business Plaza', icon: '💼' },
+  'healthcare': { name: 'Healthcare Hub', icon: '🏥' },
+  'education': { name: 'Education Center', icon: '📚' },
+  'finance': { name: 'Finance District', icon: '💰' },
+  'coffee-lounge': { name: 'Coffee Lounge', icon: '☕' },
+  'gaming-zone': { name: 'Gaming Zone', icon: '🎮' },
 }
 
 export default function ChatSession({
@@ -75,10 +101,21 @@ export default function ChatSession({
   const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState('')
   const [speakingUsers, setSpeakingUsers] = useState<Set<string>>(new Set())
+  const [selectedUserProfile, setSelectedUserProfile] = useState<UserProfile | null>(null)
   const messagesEndRef = useRef<HTMLDivElement>(null)
-  const [activeUsers] = useState<User[]>([
-    { username, animal, id: '0' },
-    ...mockUsers,
+  
+  // Current user profile (will come from signup later)
+  const currentUserProfile: UserProfile = {
+    username,
+    animal,
+    status: 'available',
+    skills: ['React', 'TypeScript'],
+    title: 'Test User',
+  }
+
+  const [activeUsers] = useState<UserProfile[]>([
+    currentUserProfile,
+    ...mockUserProfiles,
   ])
 
   const scrollToBottom = () => {
@@ -152,6 +189,13 @@ export default function ChatSession({
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex flex-col">
+      {/* User Profile Modal */}
+      {selectedUserProfile && (
+        <UserProfileCard
+          profile={selectedUserProfile}
+          onClose={() => setSelectedUserProfile(null)}
+        />
+      )}
       {/* Header */}
       <div className="bg-white shadow-sm border-b sticky top-0 z-10">
         <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
@@ -183,29 +227,57 @@ export default function ChatSession({
       </div>
 
       <div className="flex-1 flex gap-4 max-w-6xl w-full mx-auto p-4 overflow-hidden">
-        {/* 3D Animals Area */}
+        {/* User Profile Sidebar */}
         <div className="hidden lg:flex flex-col gap-4 w-80 flex-shrink-0">
-          <div className="bg-white rounded-lg shadow-md p-4">
-            <h2 className="font-bold text-gray-800 mb-3">Online Members</h2>
-            <div className="space-y-3">
-              {activeUsers.map((user) => (
-                <div
-                  key={user.id}
-                  className="flex items-center gap-3 p-3 rounded-lg bg-indigo-50 border border-indigo-200"
-                >
-                  <AnimalAvatar
-                    animal={user.animal}
-                    isSpeaking={speakingUsers.has(user.id)}
-                    size="sm"
-                  />
-                  <div className="flex-1">
-                    <div className="font-medium text-gray-800 text-sm">{user.username}</div>
-                    {speakingUsers.has(user.id) && (
-                      <div className="text-xs text-indigo-600 font-semibold">Speaking...</div>
-                    )}
-                  </div>
-                </div>
-              ))}
+          <div className="bg-white rounded-lg shadow-md p-4 max-h-[calc(100vh-200px)] overflow-y-auto">
+            <h2 className="font-bold text-gray-800 mb-3 flex items-center justify-between">
+              <span>Online Members</span>
+              <span className="text-sm font-normal text-gray-600">{activeUsers.length}</span>
+            </h2>
+            <div className="space-y-2">
+              {activeUsers.map((user, index) => {
+                const statusConfig = STATUS_CONFIG[user.status]
+                return (
+                  <button
+                    key={index}
+                    onClick={() => setSelectedUserProfile(user)}
+                    className="w-full flex items-start gap-3 p-3 rounded-lg hover:bg-blue-50 border border-gray-200 hover:border-blue-300 transition-all text-left"
+                  >
+                    <div className="text-2xl flex-shrink-0">
+                      {ANIMALS.find((a) => a.id === user.animal)?.emoji}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="font-semibold text-gray-900 text-sm truncate">
+                        {user.username}
+                      </div>
+                      {user.title && (
+                        <div className="text-xs text-gray-600 truncate">{user.title}</div>
+                      )}
+                      <div className="flex items-center gap-1 mt-1">
+                        <div className={`w-2 h-2 rounded-full ${statusConfig.color}`} />
+                        <span className="text-xs text-gray-500">{statusConfig.label}</span>
+                      </div>
+                      {user.skills && user.skills.length > 0 && (
+                        <div className="flex flex-wrap gap-1 mt-2">
+                          {user.skills.slice(0, 2).map((skill, i) => (
+                            <span
+                              key={i}
+                              className="text-xs px-2 py-0.5 bg-blue-100 text-blue-700 rounded"
+                            >
+                              {skill}
+                            </span>
+                          ))}
+                          {user.skills.length > 2 && (
+                            <span className="text-xs px-2 py-0.5 bg-gray-100 text-gray-600 rounded">
+                              +{user.skills.length - 2}
+                            </span>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  </button>
+                )
+              })}
             </div>
           </div>
 
