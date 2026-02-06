@@ -127,7 +127,7 @@ export default function HomeMap({
         {/* Map Title */}
         <div className="absolute top-20 left-0 right-0 text-center z-30 pointer-events-none">
           <h1 className="text-5xl font-black text-white drop-shadow-2xl mb-1 text-balance" style={{ textShadow: '0 4px 8px rgba(0,0,0,0.8)' }}>
-            Animal Town Map
+            Coral Reef
           </h1>
           <p className="text-lg text-white drop-shadow-lg font-semibold" style={{ textShadow: '0 2px 4px rgba(0,0,0,0.8)' }}>
             Hover over locations to explore chat rooms
@@ -140,7 +140,7 @@ export default function HomeMap({
             {/* Background Map Image */}
             <img
               src="/map-background.png"
-              alt="Animal Town Map"
+              alt="Coral Reef Map"
               className="absolute inset-0 w-full h-full object-contain drop-shadow-2xl"
             />
 

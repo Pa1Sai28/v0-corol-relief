@@ -8,8 +8,8 @@ const _geist = Geist({ subsets: ['latin'] })
 const _geistMono = Geist_Mono({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'Animal Town - Interactive Chat World',
-  description: 'Explore Animal Town with your 3D animal avatar. Visit different locations like the Coffee Shop, Gym, or Work District and chat with others in themed rooms!',
+  title: 'Coral Reef - Interactive Chat World',
+  description: 'Explore Coral Reef with your 3D animal avatar. Visit different locations like the Coffee Shop, Gym, or Work District and chat with others in themed rooms!',
   generator: 'v0.app',
 }
 
