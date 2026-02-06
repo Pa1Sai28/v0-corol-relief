@@ -7,7 +7,6 @@ import AnimalAvatar from '@/components/animal-avatar'
 import MessageBubble from '@/components/message-bubble'
 import UserProfileCard from '@/components/user-profile-card'
 import { UserProfile, STATUS_CONFIG } from '@/types/user'
-import { User } from '@/types/user' // Import User type
 
 const ANIMALS = [
   { id: 'rabbit', name: 'Rabbit', emoji: '🐰' },
@@ -45,6 +44,7 @@ const REACTIONS: ReactionEmoji = {
 // Mock user profiles with professional info
 const mockUserProfiles: UserProfile[] = [
   {
+    id: '1',
     username: 'Sarah Chen',
     animal: 'fox',
     status: 'hiring',
@@ -53,6 +53,7 @@ const mockUserProfiles: UserProfile[] = [
     company: 'TechCorp',
   },
   {
+    id: '2',
     username: 'Mike Rodriguez',
     animal: 'bear',
     status: 'looking-for-work',
@@ -61,6 +62,7 @@ const mockUserProfiles: UserProfile[] = [
     lookingFor: 'Full-time design role',
   },
   {
+    id: '3',
     username: 'Emma Wilson',
     animal: 'owl',
     status: 'mentoring',
@@ -68,12 +70,6 @@ const mockUserProfiles: UserProfile[] = [
     title: 'Data Scientist',
     company: 'DataLabs',
   },
-]
-
-const mockUsers = [
-  { id: '1', username: 'John Doe', animal: 'rabbit' },
-  { id: '2', username: 'Jane Smith', animal: 'wolf' },
-  { id: '3', username: 'Alice Johnson', animal: 'deer' },
 ]
 
 const TOPIC_INFO: Record<string, { name: string; icon: string }> = {
@@ -98,6 +94,8 @@ export default function ChatSession({
   topic: string
   onBack: () => void
 }) {
+  console.log('[v0] ChatSession loaded with topic:', topic)
+  
   const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState('')
   const [speakingUsers, setSpeakingUsers] = useState<Set<string>>(new Set())
@@ -106,6 +104,7 @@ export default function ChatSession({
   
   // Current user profile (will come from signup later)
   const currentUserProfile: UserProfile = {
+    id: '0',
     username,
     animal,
     status: 'available',
@@ -153,36 +152,38 @@ export default function ChatSession({
 
       // Simulate other users responding
       setTimeout(() => {
-        const randomUser = mockUsers[Math.floor(Math.random() * mockUsers.length)]
-        setSpeakingUsers((prev) => new Set(prev).add(randomUser.id))
+        const randomUser = mockUserProfiles[Math.floor(Math.random() * mockUserProfiles.length)]
+        if (randomUser.id) {
+          setSpeakingUsers((prev) => new Set(prev).add(randomUser.id!))
 
-        const responses = [
-          'That sounds great!',
-          'I agree with you!',
-          'Interesting point!',
-          'Tell me more!',
-          'Absolutely!',
-        ]
-        const randomResponse = responses[Math.floor(Math.random() * responses.length)]
+          const responses = [
+            'That sounds great!',
+            'I agree with you!',
+            'Interesting point!',
+            'Tell me more!',
+            'Absolutely!',
+          ]
+          const randomResponse = responses[Math.floor(Math.random() * responses.length)]
 
-        setMessages((prev) => [
-          ...prev,
-          {
-            id: (Date.now() + 1).toString(),
-            user: randomUser.username,
-            text: randomResponse,
-            animal: randomUser.animal,
-            timestamp: Date.now(),
-          },
-        ])
+          setMessages((prev) => [
+            ...prev,
+            {
+              id: (Date.now() + 1).toString(),
+              user: randomUser.username,
+              text: randomResponse,
+              animal: randomUser.animal,
+              timestamp: Date.now(),
+            },
+          ])
 
-        setTimeout(() => {
-          setSpeakingUsers((prev) => {
-            const next = new Set(prev)
-            next.delete(randomUser.id)
-            return next
-          })
-        }, 1000)
+          setTimeout(() => {
+            setSpeakingUsers((prev) => {
+              const next = new Set(prev)
+              next.delete(randomUser.id!)
+              return next
+            })
+          }, 1000)
+        }
       }, 1500)
     }
   }

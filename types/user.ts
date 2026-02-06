@@ -1,6 +1,7 @@
 export type UserStatus = 'looking-for-work' | 'hiring' | 'mentoring' | 'casual' | 'available'
 
 export interface UserProfile {
+  id?: string
   username: string
   animal: string
   status: UserStatus
